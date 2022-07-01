@@ -1,0 +1,83 @@
+﻿DROP TABLE IF Exists Orders;
+DROP TABLE IF Exists Transactions;
+DROP TABLE IF Exists Payment;
+DROP TABLE IF Exists Admin;
+DROP TABLE IF Exists Customer;
+DROP TABLE IF Exists Item;
+
+CREATE TABLE Item
+(
+  ItemID INT NOT NULL,
+  ItemName VARCHAR(50) NOT NULL,
+  ItemCategory VARCHAR(25) NOT NULL,
+  ItemPrice FLOAT NOT NULL,
+  ItemBrand VARCHAR(25) NULL,
+  ItemDescription VARCHAR(max) NULL,
+  ItemImage VARCHAR(max) NULL,
+  PRIMARY KEY (ItemID)
+);
+
+CREATE TABLE Customer
+(
+  UID INT NOT NULL,
+  UserEmail VARCHAR(100) NOT NULL,
+  UserPassword VARCHAR(25) NOT NULL,
+  UserFirstName VARCHAR(25) NOT NULL,
+  UserMidName VARCHAR(25) NOT NULL,
+  UserLastName VARCHAR(25) NOT NULL,
+  Phone VARCHAR(10) NOT NULL,
+  PRIMARY KEY (UID),
+  UNIQUE (UserEmail),
+  UNIQUE (Phone)
+);
+
+CREATE TABLE Admin
+(
+  AdminID INT NOT NULL,
+  AdminLogin VARCHAR(25) NOT NULL,
+  AdminPassword VARCHAR(25) NOT NULL,
+  AdminFirstName VARCHAR(25) NOT NULL,
+  AdminMidName VARCHAR(25) NOT NULL,
+  AdminLastName VARCHAR(25) NOT NULL,
+  PRIMARY KEY (AdminID),
+  UNIQUE (AdminLogin)
+);
+
+CREATE TABLE Payment
+(
+  PayID INT NOT NULL,
+  UID INT NOT NULL,
+  CardName VARCHAR(25) NOT NULL,
+  CardNumber VARCHAR(16) NOT NULL,
+  ExpDateMM INT NOT NULL,
+  ExpDateYY INT NOT NULL,
+  CSV INT NOT NULL,
+  Address VARCHAR(100) NOT NULL,
+  City VARCHAR(50) NOT NULL,
+  State VARCHAR(50) NOT NULL,
+  Zip INT NOT NULL,
+  PRIMARY KEY (PayID),
+  FOREIGN KEY (UID) REFERENCES Customer(UID),
+  UNIQUE (CardNumber)
+);
+
+CREATE TABLE Transactions
+(
+  TransID INT NOT NULL,
+  UID INT NOT NULL,
+  PayID INT NOT NULL,
+  TotalCost FLOAT NOT NULL,
+  PRIMARY KEY (TransID),
+  FOREIGN KEY (UID) REFERENCES Customer(UID),
+  FOREIGN KEY (PayID) REFERENCES Payment(PayID)
+);
+
+CREATE TABLE Orders
+(
+  OrderID INT NOT NULL,
+  TransID INT NOT NULL,
+  ItemID INT NOT NULL,
+  PRIMARY KEY (OrderID),
+  FOREIGN KEY (TransID) REFERENCES Transactions(TransID),
+  FOREIGN KEY (ItemID) REFERENCES Item(ItemID)
+);
